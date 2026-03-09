@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Himal Bissessar — Solutions Architect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  /* ── DESIGN TOKENS ── */
+  :root {
+    --bg:        #0a0a0c;
+    --surface:   #111116;
+    --surface2:  #18181f;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --text:      #e8e8f0;
+    --muted:     #6e6e82;
+    --accent:    #3b82f6;
+    --accent2:   #60a5fa;
+    --gold:      #c9a84c;
+    --gold-dim:  rgba(201,168,76,0.15);
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --radius:    12px;
+    --radius-lg: 20px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── SUBTLE GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+    padding: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 200px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-bio {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  .hero-bio strong { color: var(--text); font-weight: 500; }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .meta-item svg { flex-shrink: 0; opacity: 0.6; }
+
+  .hero-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .contact-btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid transparent;
+  }
+
+  .contact-btn.primary:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+  }
+
+  .contact-btn.ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+  }
+
+  .contact-btn.ghost:hover {
+    color: var(--text);
+    border-color: var(--border2);
+    background: var(--surface2);
+  }
+
+  /* ── GRID LAYOUT ── */
+  .grid-two {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .col-left { display: flex; flex-direction: column; gap: 24px; }
+  .col-right { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 24px; align-self: start; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    transition: border-color 0.2s ease;
+  }
+
+  .card:hover { border-color: var(--border2); }
+
+  .card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── EXPERIENCE TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+
+  .job {
+    position: relative;
+    padding: 0 0 32px 28px;
+    border-left: 1px solid var(--border);
+    cursor: default;
+  }
+
+  .job:last-child { padding-bottom: 0; border-left-color: transparent; }
+
+  .job::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 4px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--border2);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .job:hover::before {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(59,130,246,0.4);
+  }
+
+  .job-header { margin-bottom: 6px; }
+
+  .job-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
+  }
+
+  .job-company {
+    font-size: 0.85rem;
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  .job-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0 10px;
+    flex-wrap: wrap;
+  }
+
+  .job-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .badge-current { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-remote { background: rgba(59,130,246,0.1); color: var(--accent2); border: 1px solid rgba(59,130,246,0.2); }
+  .badge-onsite { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+
+  .job-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .job-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    transition: all 0.15s ease;
+  }
+
+  .pill:hover { color: var(--text); border-color: var(--border2); }
+
+  /* ── SKILL TIERS ── */
+  .tier-block { margin-top: 10px; }
+
+  .tier-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tier-label .tier-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tier-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+
+  /* Production Experience — blue/bright */
+  .pill-prod {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(59,130,246,0.1);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.25);
+  }
+
+  /* Working Knowledge — gold/warm */
+  .pill-work {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(201,168,76,0.08);
+    color: #d4b86a;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  /* Project Exposure — grey/dim */
+  .pill-exp {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* Skill tier legend */
+  .tier-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-prod { background: #3b82f6; }
+  .dot-work { background: #c9a84c; }
+  .dot-exp  { background: #3f3f50; border: 1px solid #555; }
+
+  /* ── TRAIT CHIPS ── */
+  .trait-chip {
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    letter-spacing: 0.01em;
+    transition: all 0.15s ease;
+    cursor: default;
+  }
+
+  .trait-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent2);
+    background: rgba(59,130,246,0.06);
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid { display: flex; flex-direction: column; gap: 16px; }
+
+  .skill-group-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+
+  .skill-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .chip {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    letter-spacing: 0.01em;
+    transition: all 0.15s ease;
+  }
+
+  .chip:hover { border-color: var(--accent); color: var(--accent2); }
+  .chip.highlight { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.2); color: var(--accent2); }
+
+  /* ── CERTS ── */
+  .cert-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .cert-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .cert-item:hover { border-color: var(--border2); }
+
+  .cert-icon {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .cert-icon.blue { background: rgba(59,130,246,0.12); }
+  .cert-icon.gold { background: var(--gold-dim); }
+
+  .cert-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .cert-issuer {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+
+  /* ── EDUCATION ── */
+  .edu-item {
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .edu-degree { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .edu-school { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+  .edu-year { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+    transition: border-color 0.2s ease;
+  }
+
+  .stat-card:hover { border-color: var(--border2); }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 48px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .disclaimer-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    padding: 6px 14px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+
+  .disclaimer-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-gap { margin-top: 24px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.5s ease both; }
+  .stats-row { animation: fadeUp 0.5s 0.1s ease both; }
+  .grid-two { animation: fadeUp 0.5s 0.15s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    .grid-two { grid-template-columns: 1fr; }
+    .col-right { order: -1; position: static; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .hero { grid-template-columns: 1fr; padding: 28px; }
+    .hero-contacts { flex-direction: row; flex-wrap: wrap; }
+    .page-wrap { padding: 20px 16px 60px; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 1.8rem; }
+    .card { padding: 20px; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- ─── HERO ─── -->
+  <header class="hero">
+    <div>
+      <div class="hero-label">Built to Streamline</div>
+      <h1>Himal<br>Bissessar</h1>
+      <div class="hero-title">Network Infrastructure & Automation Engineering</div>
+      <p class="hero-bio">
+        10 years of progressive experience bridging <strong>enterprise network infrastructure</strong> and
+        <strong>intelligent automation</strong>. Proven track record designing and deploying
+        multi-vendor solutions — Juniper, FortiGate — and building internal tooling that turns
+        operational complexity into repeatable, scalable workflows.
+      </p>
+      <div class="hero-meta">
+        <span class="meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Johannesburg, South Africa
+        </span>
+        <span class="meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Currently: Saicom Voice Services
+        </span>
+        <span class="meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Available for new opportunities
+        </span>
+      </div>
+    </div>
+    <div class="hero-contacts">
+      <a href="/cdn-cgi/l/email-protection#ed8584808c818f849e9e889e9e8c9fad8a808c8481c38e8280" class="contact-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Me
+      </a>
+      <a href="tel:+27797224179" class="contact-btn ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +27 79 722 4179
+      </a>
+      <a href="https://www.linkedin.com/in/himal-bissessar" target="_blank" class="contact-btn ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </header>
+
+  <!-- ─── STATS ─── -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">10<span>+</span></div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">15<span>+</span></div>
+      <div class="stat-label">Vendors Deployed</div>
+    </div>
+  </div>
+
+  <!-- ─── MAIN GRID ─── -->
+  <div class="grid-two">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-left">
+
+      <!-- EXPERIENCE -->
+      <div class="card">
+        <div class="card-label">Experience</div>
+        <div class="tier-legend">
+          <span class="legend-item"><span class="legend-dot dot-prod"></span>Production Experience</span>
+          <span class="legend-item"><span class="legend-dot dot-work"></span>Working Knowledge</span>
+          <span class="legend-item"><span class="legend-dot dot-exp"></span>Project Exposure</span>
+        </div>
+        <div class="timeline">
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">Automation Engineer</div>
+              <div class="job-company">Saicom Voice Services (Pty) Ltd</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Jun 2025 — Present</span>
+              <span class="badge badge-current">Current</span>
+            </div>
+            <p class="job-desc">
+              Designing and deploying automation workflows that replace manual provisioning processes across Saicom's network infrastructure. Building internal tooling for integrating Twyn CRM, NetBox APIs, and other third-party platforms into a cohesive full-stack environment (React + FastAPI + PostgreSQL + Docker).
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">Python</span>
+              <span class="pill-prod">FastAPI</span>
+              <span class="pill-prod">Docker</span>
+              <span class="pill-prod">REST APIs</span>
+              <span class="pill-prod">n8n</span>
+              <span class="pill-work">React</span>
+              <span class="pill-work">PostgreSQL</span>
+              <span class="pill-work">GitHub / GitLab</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">Senior Provisioning Engineer</div>
+              <div class="job-company">Saicom Voice Services (Pty) Ltd</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Feb 2022 — May 2025</span>
+            </div>
+            <p class="job-desc">
+              Led design and deployment of SD-WAN solutions across VeloCloud, FortiGate and ViBE platforms for enterprise clients. Built a Python-based network configuration generator with NetBox API integration, reducing provisioning time significantly. Owned high and low-level design documentation and client-facing architecture presentations.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">SD-WAN</span>
+              <span class="pill-prod">FortiGate</span>
+              <span class="pill-prod">Juniper MX/EX/SRX</span>
+              <span class="pill-prod">BGP / MPLS</span>
+              <span class="pill-prod">Python Automation</span>
+              <span class="pill-work">NetBox API</span>
+              <span class="pill-work">HLD / LLD</span>
+              <span class="pill-work">IPAM</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">Provisioning Engineer</div>
+              <div class="job-company">Saicom Voice Services (Pty) Ltd</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Feb 2021 — Nov 2021</span>
+            </div>
+            <p class="job-desc">
+              Provisioned and configured Juniper, FortiGate and SBC (Oracle ACME) equipment for enterprise deployments. Developed configuration templates to standardise delivery and reduce human error across the provisioning team.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">Juniper</span>
+              <span class="pill-prod">FortiGate</span>
+              <span class="pill-prod">VDOM</span>
+              <span class="pill-prod">VPN</span>
+              <span class="pill-work">Config Templates</span>
+              <span class="pill-work">Oracle ACME SBC</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">2nd Line Network Support Engineer</div>
+              <div class="job-company">Saicom Voice Services (Pty) Ltd</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Jul 2019 — Jan 2021</span>
+            </div>
+            <p class="job-desc">
+              Escalation point for complex network incidents across a multi-vendor service provider environment. Handled BGP routing, MPLS circuits, and firewall filtering across CPE and core infrastructure.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">BGP</span>
+              <span class="pill-prod">MPLS</span>
+              <span class="pill-prod">Incident Management</span>
+              <span class="pill-work">Firewall Filtering</span>
+              <span class="pill-exp">Azure Networking</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">Network Engineer</div>
+              <div class="job-company">Perfectworx Consulting (Pty) Ltd</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Feb 2018 — Jul 2019</span>
+            </div>
+            <p class="job-desc">
+              Full lifecycle deployment of multi-vendor CPE and core network solutions including Juniper, Cisco, FortiGate, Checkpoint, and Aritar SD-WAN. Delivered client-facing architecture presentations and authored comprehensive network documentation and support procedures.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">Juniper MX/EX/SRX</span>
+              <span class="pill-prod">FortiGate</span>
+              <span class="pill-prod">OSPF</span>
+              <span class="pill-prod">Network Design</span>
+              <span class="pill-work">Cisco Meraki</span>
+              <span class="pill-work">Checkpoint</span>
+              <span class="pill-exp">Juniper Space</span>
+              <span class="pill-exp">Aritar SD-WAN</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">First Line Support — Network Engineer</div>
+              <div class="job-company">Vodacom Business Africa</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Mar 2017 — Feb 2018</span>
+            </div>
+            <p class="job-desc">
+              Remote troubleshooting on Cisco infrastructure within Vodacom's managed services network. Handled VRF routing, QoS, BGP, and utilisation analysis for enterprise clients.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">Cisco</span>
+              <span class="pill-prod">BGP</span>
+              <span class="pill-work">VRF</span>
+              <span class="pill-work">QoS</span>
+            </div>
+          </div>
+
+          <div class="job">
+            <div class="job-header">
+              <div class="job-role">Junior Network Engineer</div>
+              <div class="job-company">Skywire Technologies</div>
+            </div>
+            <div class="job-meta">
+              <span class="job-date">Dec 2015 — Feb 2017</span>
+            </div>
+            <p class="job-desc">
+              Configured and monitored MikroTik, Cambium and Radwin wireless infrastructure. Managed VLAN/IP addressing, PRTG monitoring, and first-line client support.
+            </p>
+            <div class="tier-pills">
+              <span class="pill-prod">MikroTik</span>
+              <span class="pill-prod">VLAN</span>
+              <span class="pill-work">PRTG Monitoring</span>
+              <span class="pill-work">Wireless</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-right">
+
+      <!-- CHARACTER -->
+      <div class="card">
+        <div class="card-label">Character</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">
+          <span class="trait-chip">🧭 Systems Thinker</span>
+          <span class="trait-chip">⚡ Quick Learner</span>
+          <span class="trait-chip">🔭 Tech Explorer</span>
+          <span class="trait-chip">🔄 Adaptable</span>
+          <span class="trait-chip">🤝 Collaborative</span>
+          <span class="trait-chip">📐 Detail-Oriented</span>
+        </div>
+        <p style="font-size:0.83rem; color:var(--muted); line-height:1.7; border-top:1px solid var(--border); padding-top:16px;">
+          I approach problems by understanding the full system first — how each piece talks to the next — before reaching for a solution. Whether it's a network topology or an automation pipeline, I care about making things work <em style="color:var(--text);">reliably and simply</em>.
+        </p>
+      </div>
+
+      <!-- CERTIFICATIONS -->
+      <div class="card">
+        <div class="card-label">Certifications</div>
+        <div class="cert-list">
+          <div class="cert-item">
+            <div class="cert-icon blue">🏛️</div>
+            <div>
+              <div class="cert-name">CCNP / CCNA — Routing & Switching</div>
+              <div class="cert-issuer">Cisco · Foundational knowledge actively applied</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon gold">📡</div>
+            <div>
+              <div class="cert-name">MTCWE / MTCNA</div>
+              <div class="cert-issuer">MikroTik · Wireless & Network Associate</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon blue">🖧</div>
+            <div>
+              <div class="cert-name">MTA 98-366 — Networking Fundamentals</div>
+              <div class="cert-issuer">Microsoft</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-top:14px; line-height:1.6;">
+          Certifications lapsed — knowledge and hands-on application remains current through 10 years of production experience.
+        </p>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="card">
+        <div class="card-label">Education</div>
+        <div class="edu-item">
+          <div class="edu-degree">Full Stack Web Development & Software Engineering</div>
+          <div class="edu-school">Hyperion Development</div>
+          <div class="edu-year">In progress — JavaScript, Java, React, Docker, SQL/NoSQL</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-degree">NSC — National Senior Certificate</div>
+          <div class="edu-school">Rand Park High School</div>
+          <div class="edu-year">Completed 2014 · Incl. IT, Mathematics, Physical Science</div>
+        </div>
+      </div>
+
+      <!-- BUILT WITH -->
+      <div class="card" style="padding: 20px 24px; background: linear-gradient(135deg, rgba(59,130,246,0.04), rgba(201,168,76,0.04));">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span style="font-size:18px;">🔭</span>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:#fff;">Always Exploring Tech</span>
+        </div>
+        <p style="font-size:0.82rem; color:var(--muted); line-height:1.65;">
+          Curious by nature. I don't just configure networks — I build the tools that configure them.
+          Currently exploring AI-integrated automation, LLM-driven infrastructure tooling, and 
+          full-stack internal platforms.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="footer-disclaimer">
+      <div class="disclaimer-badge">
+        <span class="dot"></span>
+        Crafted with curiosity &amp; AI
+      </div>
+      <span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted);">
+        — this CV is a living document, like all good infrastructure
+      </span>
+    </div>
+    <div class="footer-copy">
+      <a href="/cdn-cgi/l/email-protection" class="_
